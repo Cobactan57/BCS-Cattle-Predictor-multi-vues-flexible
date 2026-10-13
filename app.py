@@ -3,7 +3,7 @@ import io
 import numpy as np
 import streamlit as st
 import torch
-from PIL import Image
+from PIL import Image, ImageOps
 from supabase import create_client
 from torch import nn
 from torchvision import models, transforms
@@ -124,26 +124,49 @@ except Exception as exc:
     st.code(str(exc))
     st.stop()
 
+# Une seule source active par vue : import depuis la galerie ou prise de vue directe.
+# Les widgets conservent leurs images pendant les interactions Streamlit.
 uploads = {}
-cols = st.columns(4)
+st.subheader("Acquisition des photographies")
+st.caption("Pour chaque vue, importez une image ou photographiez directement l'animal. Une à quatre vues suffisent.")
 
-for col, view in zip(cols, VIEW_ORDER):
-    with col:
-        st.subheader(view)
-        f = st.file_uploader(
-            f"Photo — {view}",
-            type=["jpg", "jpeg", "png"],
-            key=f"upload_{view}",
+for idx, view in enumerate(VIEW_ORDER):
+    with st.expander(f"{idx + 1}. {view}", expanded=(idx == 0)):
+        source = st.radio(
+            f"Source de l'image — {view}",
+            options=("Prendre une photo", "Importer une photo"),
+            key=f"source_{idx}",
+            horizontal=True,
         )
+
+        if source == "Prendre une photo":
+            f = st.camera_input(
+                f"Photographier : {view}",
+                key=f"camera_{idx}",
+            )
+        else:
+            f = st.file_uploader(
+                f"Importer : {view}",
+                type=["jpg", "jpeg", "png"],
+                key=f"upload_{idx}",
+            )
+
         if f is not None:
-            img = Image.open(f).convert("RGB")
-            uploads[view] = img
-            st.image(img, use_container_width=True)
+            try:
+                # Corrige l'orientation EXIF des images prises avec un téléphone.
+                with Image.open(f) as image:
+                    img = ImageOps.exif_transpose(image).convert("RGB")
+                uploads[view] = img
+                st.image(img, caption=f"Vue sélectionnée : {view}", use_container_width=True)
+            except (OSError, ValueError) as exc:
+                st.error(f"Image illisible pour la vue {view} : {exc}")
+
+st.caption(f"{len(uploads)} vue(s) prête(s) pour la prédiction sur 4 possibles.")
 
 n = len(uploads)
 
 if n == 0:
-    st.info("Chargez au moins une photo.")
+    st.info("Importez ou prenez au moins une photo.")
 else:
     if n == 4:
         st.success("4 vues disponibles : configuration optimale.")
