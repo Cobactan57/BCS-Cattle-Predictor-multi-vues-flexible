@@ -1,0 +1,8 @@
+streamlit>=1.39
+supabase>=2.10
+torch>=2.4
+torchvision>=0.19
+pillow>=10.4
+numpy>=2.0
+pandas>=2.2
+scikit-learn>=1.5

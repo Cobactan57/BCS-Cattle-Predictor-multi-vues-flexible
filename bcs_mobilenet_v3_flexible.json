@@ -1,0 +1,49 @@
+{
+  "architecture": "mobilenet_v3_small_flexible_multiview",
+  "view_order": [
+    "Dorso-caudale",
+    "Arrière",
+    "Latérale gauche",
+    "Latérale droite"
+  ],
+  "input_size": 224,
+  "score_min": 1.0,
+  "score_max": 5.0,
+  "score_increment": 0.25,
+  "trained_at_utc": "2026-10-13T14:08:04+00:00",
+  "n_sessions_total": 14,
+  "n_sessions_train": 11,
+  "n_sessions_validation": 3,
+  "n_animals_total": 14,
+  "view_dropout_probability": 0.7,
+  "validation_metrics_by_n_views": {
+    "1": {
+      "mae": 0.5197083155314127,
+      "rmse": 0.5773139552641313,
+      "within_0_25": 0.3333333333333333,
+      "within_0_50": 0.3333333333333333,
+      "residual_abs_q95": 0.7130640745162964
+    },
+    "2": {
+      "mae": 0.8312109311421713,
+      "rmse": 0.8839476556995752,
+      "within_0_25": 0.0,
+      "within_0_50": 0.3333333333333333,
+      "residual_abs_q95": 1.1616161584854126
+    },
+    "3": {
+      "mae": 0.43720165888468426,
+      "rmse": 0.5111209520031224,
+      "within_0_25": 0.3333333333333333,
+      "within_0_50": 0.3333333333333333,
+      "residual_abs_q95": 0.6822757959365845
+    },
+    "4": {
+      "mae": 0.3717549641927083,
+      "rmse": 0.37674267136930145,
+      "within_0_25": 0.0,
+      "within_0_50": 1.0,
+      "residual_abs_q95": 0.44534945487976074
+    }
+  }
+}
